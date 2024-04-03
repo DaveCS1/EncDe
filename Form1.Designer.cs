@@ -40,7 +40,15 @@
             this.lstFiles = new System.Windows.Forms.ListBox();
             this.rtfFileContents = new System.Windows.Forms.RichTextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabEncrypt = new System.Windows.Forms.TabPage();
+            this.tabDecrypt = new System.Windows.Forms.TabPage();
+            this.lstDecryptFiles = new System.Windows.Forms.ListBox();
+            this.rtfDecryptedFile = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabEncrypt.SuspendLayout();
+            this.tabDecrypt.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -61,7 +69,7 @@
             this.tsMnuAddFiles.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddFiles});
             this.tsMnuAddFiles.Name = "tsMnuAddFiles";
-            this.tsMnuAddFiles.Size = new System.Drawing.Size(46, 24);
+            this.tsMnuAddFiles.Size = new System.Drawing.Size(46, 26);
             this.tsMnuAddFiles.Text = "File";
             // 
             // tsAddFiles
@@ -74,7 +82,7 @@
             // encryptToolStripMenuItem
             // 
             this.encryptToolStripMenuItem.Name = "encryptToolStripMenuItem";
-            this.encryptToolStripMenuItem.Size = new System.Drawing.Size(72, 24);
+            this.encryptToolStripMenuItem.Size = new System.Drawing.Size(72, 26);
             this.encryptToolStripMenuItem.Text = "Encrypt";
             this.encryptToolStripMenuItem.Click += new System.EventHandler(this.encryptToolStripMenuItem_Click);
             // 
@@ -83,6 +91,7 @@
             this.decryptToolStripMenuItem.Name = "decryptToolStripMenuItem";
             this.decryptToolStripMenuItem.Size = new System.Drawing.Size(75, 26);
             this.decryptToolStripMenuItem.Text = "Decrypt";
+            this.decryptToolStripMenuItem.Click += new System.EventHandler(this.decryptToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -123,9 +132,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFiles.FormattingEnabled = true;
             this.lstFiles.ItemHeight = 16;
-            this.lstFiles.Location = new System.Drawing.Point(16, 74);
+            this.lstFiles.Location = new System.Drawing.Point(6, 6);
             this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(1043, 84);
+            this.lstFiles.Size = new System.Drawing.Size(1020, 84);
             this.lstFiles.TabIndex = 5;
             this.lstFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmMain_DragDrop);
             this.lstFiles.DragOver += new System.Windows.Forms.DragEventHandler(this.frmMain_DragOver);
@@ -135,9 +144,9 @@
             this.rtfFileContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtfFileContents.Location = new System.Drawing.Point(16, 164);
+            this.rtfFileContents.Location = new System.Drawing.Point(6, 96);
             this.rtfFileContents.Name = "rtfFileContents";
-            this.rtfFileContents.Size = new System.Drawing.Size(1043, 395);
+            this.rtfFileContents.Size = new System.Drawing.Size(1020, 356);
             this.rtfFileContents.TabIndex = 6;
             this.rtfFileContents.Text = "";
             // 
@@ -153,15 +162,75 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabEncrypt);
+            this.tabControl1.Controls.Add(this.tabDecrypt);
+            this.tabControl1.Location = new System.Drawing.Point(16, 72);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1043, 487);
+            this.tabControl1.TabIndex = 8;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            // 
+            // tabEncrypt
+            // 
+            this.tabEncrypt.Controls.Add(this.lstFiles);
+            this.tabEncrypt.Controls.Add(this.rtfFileContents);
+            this.tabEncrypt.Location = new System.Drawing.Point(4, 25);
+            this.tabEncrypt.Name = "tabEncrypt";
+            this.tabEncrypt.Padding = new System.Windows.Forms.Padding(3);
+            this.tabEncrypt.Size = new System.Drawing.Size(1035, 458);
+            this.tabEncrypt.TabIndex = 0;
+            this.tabEncrypt.Text = "Encrypt";
+            this.tabEncrypt.UseVisualStyleBackColor = true;
+            // 
+            // tabDecrypt
+            // 
+            this.tabDecrypt.Controls.Add(this.lstDecryptFiles);
+            this.tabDecrypt.Controls.Add(this.rtfDecryptedFile);
+            this.tabDecrypt.Location = new System.Drawing.Point(4, 25);
+            this.tabDecrypt.Name = "tabDecrypt";
+            this.tabDecrypt.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDecrypt.Size = new System.Drawing.Size(1035, 458);
+            this.tabDecrypt.TabIndex = 1;
+            this.tabDecrypt.Text = "Decrypt";
+            this.tabDecrypt.UseVisualStyleBackColor = true;
+            // 
+            // lstDecryptFiles
+            // 
+            this.lstDecryptFiles.AllowDrop = true;
+            this.lstDecryptFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstDecryptFiles.FormattingEnabled = true;
+            this.lstDecryptFiles.ItemHeight = 16;
+            this.lstDecryptFiles.Location = new System.Drawing.Point(7, 6);
+            this.lstDecryptFiles.Name = "lstDecryptFiles";
+            this.lstDecryptFiles.Size = new System.Drawing.Size(1020, 84);
+            this.lstDecryptFiles.TabIndex = 7;
+            // 
+            // rtfDecryptedFile
+            // 
+            this.rtfDecryptedFile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtfDecryptedFile.Location = new System.Drawing.Point(7, 96);
+            this.rtfDecryptedFile.Name = "rtfDecryptedFile";
+            this.rtfDecryptedFile.Size = new System.Drawing.Size(1020, 356);
+            this.rtfDecryptedFile.TabIndex = 8;
+            this.rtfDecryptedFile.Text = "";
+            // 
             // frmMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1071, 571);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.rtfFileContents);
-            this.Controls.Add(this.lstFiles);
             this.Controls.Add(this.txtDecryptionKey);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtEncryptionKey);
@@ -175,6 +244,9 @@
             this.DragOver += new System.Windows.Forms.DragEventHandler(this.frmMain_DragOver);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabEncrypt.ResumeLayout(false);
+            this.tabDecrypt.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -194,6 +266,11 @@
         private System.Windows.Forms.ListBox lstFiles;
         private System.Windows.Forms.RichTextBox rtfFileContents;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabEncrypt;
+        private System.Windows.Forms.TabPage tabDecrypt;
+        private System.Windows.Forms.ListBox lstDecryptFiles;
+        private System.Windows.Forms.RichTextBox rtfDecryptedFile;
     }
 }
 

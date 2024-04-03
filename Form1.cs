@@ -81,6 +81,7 @@ namespace EncryptDecryptAndRandomize
 
         private void encryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            tabControl1.SelectedTab = tabEncrypt;
         if (lstFiles.SelectedItems.Count > 0)
         {
             List<string> selectedFiles = new List<string>();
@@ -97,6 +98,17 @@ namespace EncryptDecryptAndRandomize
             MessageBox.Show("Please select at least one file to encrypt.", "No Files Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
+        }
+
+        private void decryptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string key = txtEncryptionKey.Text;
+           tabControl1.SelectedTab = tabDecrypt;
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }
