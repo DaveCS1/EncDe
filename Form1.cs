@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,7 @@ namespace EncryptDecryptAndRandomize
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
+            openFileDialog.Filter = "VB Files (*.vb)|*.vb|C# Files (*.cs)|*.cs|Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 foreach (string file in openFileDialog.FileNames)
@@ -82,15 +84,15 @@ namespace EncryptDecryptAndRandomize
         private void encryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tabControl1.SelectedTab = tabEncrypt;
-        if (lstFiles.SelectedItems.Count > 0)
+        if (lstFiles.Items.Count > 0)
         {
-            List<string> selectedFiles = new List<string>();
-            foreach (var item in lstFiles.SelectedItems)
+            List<string> files = new List<string>();
+            foreach (var item in lstFiles.Items)
             {
-                selectedFiles.Add(item.ToString());
+                files.Add(item.ToString());
             }
             
-            OfuscateAndEncrypt encryptor = new OfuscateAndEncrypt(selectedFiles);
+            OfuscateAndEncrypt encryptor = new OfuscateAndEncrypt(files);
                 ofuscateAndEncrypt = encryptor;
                 txtEncryptionKey.Text = encryptor.EncryptionKey;
         }
@@ -103,13 +105,30 @@ namespace EncryptDecryptAndRandomize
 
         private void decryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string key = txtEncryptionKey.Text;
-           tabControl1.SelectedTab = tabDecrypt;
-            var list = new List<string>();
-            list = ofuscateAndEncrypt.GetEncryptedFiles().ToList();
-            lstDecryptFiles.Items.Add(list);
+            // string key = txtEncryptionKey.Text;
+            //tabControl1.SelectedTab = tabDecrypt;
+            // var list = new List<string>();
+            // ofuscateAndEncrypt = new OfuscateAndEncrypt();
+            var t = GetEncryptedFiles();
+            //list = ofuscateAndEncrypt.GetEncryptedFiles().ToList();
+            foreach (var item in t)
+            {
+ lstDecryptFiles.Items.Add(item);
+            }
+           
         }
+        public List<string> GetEncryptedFiles()
+        {
+            var encryptedFiles = new List<string>();
+            var allFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*_encrypted.txt", SearchOption.AllDirectories);
 
+            foreach (var file in allFiles)
+            {
+                encryptedFiles.Add(Path.GetFullPath(file));
+            }
+
+            return encryptedFiles;
+        }
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             

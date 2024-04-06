@@ -30,7 +30,8 @@ namespace EncryptDecryptAndRandomize
     string obfuscatedCode = ObfuscateCode(code);
     string encryptedCode = EncryptString(obfuscatedCode, key, iv);
     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file) + "_" + DateTime.Now.ToString("MMddyy_HHmmss");
-    string encryptedFileName = fileNameWithoutExtension + ".txt";
+   // string encryptedFileName = fileNameWithoutExtension + ".txt";
+    string encryptedFileName = fileNameWithoutExtension + "_encrypted.txt";
     File.WriteAllText(encryptedFileName, encryptedCode);
     filesToEncrypt.Remove(file);
     SaveMappingToFile(fileNameWithoutExtension + "_mapping.txt");
@@ -155,11 +156,23 @@ namespace EncryptDecryptAndRandomize
             });
         } 
         #endregion
-public List<string> GetEncryptedFiles()
-{
-    string[] encryptedFiles = Directory.GetFiles("*.txt");
-    return encryptedFiles.Select(Path.GetFileName).ToList();
-}
+//public List<string> GetEncryptedFiles()
+//{
+//            string[] encryptedFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*_encrypted.txt");
+//            return encryptedFiles.Select(Path.GetFileName).ToList();
+//}
+        public List<string> GetEncryptedFiles()
+        {
+            var encryptedFiles = new List<string>();
+            var allFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory ,"*_encrypted.txt", SearchOption.AllDirectories);
+
+            foreach (var file in allFiles)
+            {
+                encryptedFiles.Add(Path.GetFullPath(file));
+            }
+
+            return encryptedFiles;
+        }
 
         //
     }
