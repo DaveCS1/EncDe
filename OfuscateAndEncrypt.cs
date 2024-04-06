@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EncryptDecryptAndRandomize
 {
-    internal class OfuscateAndEncrypt
+    public class OfuscateAndEncrypt
     {      
         static Dictionary<string, string> nameMapping = new Dictionary<string, string>();
         static Random random = new Random();
@@ -21,28 +21,25 @@ namespace EncryptDecryptAndRandomize
         public OfuscateAndEncrypt(List<string> filesToEncrypt)
         {
             filesToEncryp.Clear();
-            foreach (string file in filesToEncrypt)
-            {
-                random.NextBytes(key);
-                random.NextBytes(iv);
-                string code = File.ReadAllText(file);
-                string obfuscatedCode = ObfuscateCode(code);
-                string encryptedCode = EncryptString(obfuscatedCode, key, iv);
-                // Append the encrypted code to EncryptedVBCode.txt
-                using (StreamWriter writer = File.AppendText("EncryptedVBCode.txt"))
-                {
-                    writer.WriteLine(encryptedCode);
-                    writer.WriteLine();
-                    writer.WriteLine();
-                    writer.WriteLine($"***Next File*** {Path.GetFileName(file)}");
-                }
-                // Convert the key to a Base64 string and store it in the EncryptionKey property
-                EncryptionKey = Convert.ToBase64String(key);
-            }
-            SaveMappingToFile("Mapping.txt");
-
-            //var t=  DecryptAndDeobfuscate("EncryptedVBCode.txt", "EncryptionKey.txt", "Mapping.txt");
-            //Console.WriteLine(t);
+            random.NextBytes(key);
+            random.NextBytes(iv);
+            EncryptionKey = Convert.ToBase64String(key);
+            foreach (string file in filesToEncrypt.ToList())
+{
+    string code = File.ReadAllText(file);
+    string obfuscatedCode = ObfuscateCode(code);
+    string encryptedCode = EncryptString(obfuscatedCode, key, iv);
+    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file) + "_" + DateTime.Now.ToString("MMddyy_HHmmss");
+    string encryptedFileName = fileNameWithoutExtension + ".txt";
+    File.WriteAllText(encryptedFileName, encryptedCode);
+    filesToEncrypt.Remove(file);
+    SaveMappingToFile(fileNameWithoutExtension + "_mapping.txt");
+    
+    // Save the encryption key to a file with a similar name
+   
+}
+        string keyFileName = "encryption_key_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".txt";
+        File.WriteAllText(keyFileName, EncryptionKey);
         }
 
         #region Encrypt
@@ -158,7 +155,11 @@ namespace EncryptDecryptAndRandomize
             });
         } 
         #endregion
-
+public List<string> GetEncryptedFiles()
+{
+    string[] encryptedFiles = Directory.GetFiles("*.txt");
+    return encryptedFiles.Select(Path.GetFileName).ToList();
+}
 
         //
     }

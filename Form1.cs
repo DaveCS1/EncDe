@@ -16,7 +16,7 @@ namespace EncryptDecryptAndRandomize
         {
             InitializeComponent();
         }
-
+        public OfuscateAndEncrypt ofuscateAndEncrypt { get; set; }
         //need a dragover event
         private void frmMain_DragOver(object sender, DragEventArgs e)
         {
@@ -91,6 +91,7 @@ namespace EncryptDecryptAndRandomize
             }
             
             OfuscateAndEncrypt encryptor = new OfuscateAndEncrypt(selectedFiles);
+                ofuscateAndEncrypt = encryptor;
                 txtEncryptionKey.Text = encryptor.EncryptionKey;
         }
         else
@@ -104,6 +105,9 @@ namespace EncryptDecryptAndRandomize
         {
             string key = txtEncryptionKey.Text;
            tabControl1.SelectedTab = tabDecrypt;
+            var list = new List<string>();
+            list = ofuscateAndEncrypt.GetEncryptedFiles().ToList();
+            lstDecryptFiles.Items.Add(list);
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
