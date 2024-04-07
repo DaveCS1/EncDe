@@ -41,10 +41,10 @@ namespace EncryptDecryptAndRandomize
                     lstFiles.Items.Add(file);
 
                 }
-                if (lstFiles.Items.Count > 0)
-                {
-                    lstFiles.SelectedIndex = 0;
-                }
+              //  if (lstFiles.Items.Count > 0)
+              //  {
+              //      lstFiles.SelectedIndex = 0;
+              //  }
 
             }
 
@@ -83,13 +83,18 @@ namespace EncryptDecryptAndRandomize
 
         private void encryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             tabControl1.SelectedTab = tabEncrypt;
         if (lstFiles.Items.Count > 0)
         {
             List<string> files = new List<string>();
             foreach (var item in lstFiles.Items)
             {
-                files.Add(item.ToString());
+                string file = item.ToString();
+                if (!files.Contains(file))
+                {
+                    files.Add(file);
+                }
             }
             
             OfuscateAndEncrypt encryptor = new OfuscateAndEncrypt(files);
@@ -105,16 +110,8 @@ namespace EncryptDecryptAndRandomize
 
         private void decryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // string key = txtEncryptionKey.Text;
-            //tabControl1.SelectedTab = tabDecrypt;
-            // var list = new List<string>();
-            // ofuscateAndEncrypt = new OfuscateAndEncrypt();
-            var t = GetEncryptedFiles();
-            //list = ofuscateAndEncrypt.GetEncryptedFiles().ToList();
-            foreach (var item in t)
-            {
- lstDecryptFiles.Items.Add(item);
-            }
+          
+            lstDecryptFiles.Items.AddRange(GetEncryptedFiles().Distinct().ToArray());
            
         }
         public List<string> GetEncryptedFiles()
@@ -132,6 +129,14 @@ namespace EncryptDecryptAndRandomize
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var t = new OfuscateAndEncrypt();
+            t.DecryptAndDeobfuscateFiles(txtDecryptionKey.Text);
+            Console.WriteLine(t.EncryptionKey);
+               
         }
     }
 }

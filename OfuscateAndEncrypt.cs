@@ -31,6 +31,10 @@ namespace EncryptDecryptAndRandomize
     string encryptedCode = EncryptString(obfuscatedCode, key, iv);
     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file) + "_" + DateTime.Now.ToString("MMddyy_HHmmss");
    // string encryptedFileName = fileNameWithoutExtension + ".txt";
+    string ivFileName = fileNameWithoutExtension + "_iv.txt";
+        File.WriteAllText(ivFileName, Convert.ToBase64String(iv));
+  
+  
     string encryptedFileName = fileNameWithoutExtension + "_encrypted.txt";
     File.WriteAllText(encryptedFileName, encryptedCode);
     filesToEncrypt.Remove(file);
@@ -101,33 +105,80 @@ namespace EncryptDecryptAndRandomize
         } 
         #endregion
         #region Decrypt
-        public string DecryptAndDeobfuscate(string encryptedFilePath, string keyFilePath, string mappingFilePath)
-        {
+     //   public string DecryptAndDeobfuscate(string encryptedFilePath, string keyFilePath, string mappingFilePath)
+      //  {
             // Read the encrypted code from the file
-            string encryptedCode = File.ReadAllText(encryptedFilePath);
+         //   string encryptedCode = File.ReadAllText(encryptedFilePath);
 
             // Read the encryption key from the file
-            string keyString = File.ReadAllText(keyFilePath);
-            byte[] key = Convert.FromBase64String(keyString);
+        //    string keyString = File.ReadAllText(keyFilePath);
+        //    byte[] key = Convert.FromBase64String(keyString);
 
             // Decrypt the code
-            string decryptedCode = DecryptString(encryptedCode, key, iv);
+         //   string decryptedCode = DecryptString(encryptedCode, key, iv);
 
             // Load the name mapping from the file
-            LoadMappingFromFile(mappingFilePath);
+         //   LoadMappingFromFile(mappingFilePath);
 
             // Deobfuscate the code using the name mapping
-            string deobfuscatedCode = DeobfuscateCode(decryptedCode);
+        //    string deobfuscatedCode = DeobfuscateCode(decryptedCode);
 
-            return deobfuscatedCode;
-        }
+          //  return deobfuscatedCode;
+      //  }
+public string DecryptAndDeobfuscate(string encryptedFilePath, string encryptionKey, string mappingFilePath)
+{
+    // Read the encrypted code from the file
+    string encryptedCode = File.ReadAllText(encryptedFilePath);
 
+    // Convert the encryption key from Base64 string to byte array
+    byte[] key = Convert.FromBase64String(encryptionKey);
+
+    // Read the IV from the file
+    string ivFilePath = Path.ChangeExtension(encryptedFilePath, "_iv.txt").Replace("_encrypted","").Replace("._iv", "_iv");
+            Console.WriteLine(ivFilePath);
+    byte[] iv = Convert.FromBase64String(File.ReadAllText(ivFilePath));
+
+    // Decrypt the code
+    string decryptedCode = DecryptString(encryptedCode, key, iv);
+
+    // Load the name mapping from the file
+    LoadMappingFromFile(mappingFilePath);
+
+    // Deobfuscate the code using the name mapping
+    string deobfuscatedCode = DeobfuscateCode(decryptedCode);
+
+    return deobfuscatedCode;
+}
+        //static string DecryptString(string encryptedText, byte[] key, byte[] iv)
+        //{
+        //    using (Aes aes = Aes.Create())
+        //    {
+        //        aes.Key = key;
+        //        aes.IV = iv;
+
+        //        ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+        //        byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+
+        //        using (MemoryStream msDecrypt = new MemoryStream(encryptedBytes))
+        //        {
+        //            using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+        //            {
+        //                using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+        //                {
+        //                    return srDecrypt.ReadToEnd();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
         static string DecryptString(string encryptedText, byte[] key, byte[] iv)
         {
             using (Aes aes = Aes.Create())
             {
                 aes.Key = key;
                 aes.IV = iv;
+              //  aes.Padding = PaddingMode.PKCS7; // Specify the padding mode
 
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
@@ -145,7 +196,6 @@ namespace EncryptDecryptAndRandomize
                 }
             }
         }
-
         static string DeobfuscateCode(string obfuscatedCode)
         {
             string pattern = @"\b([A-Z0-9]{5})\b";
@@ -156,11 +206,7 @@ namespace EncryptDecryptAndRandomize
             });
         } 
         #endregion
-//public List<string> GetEncryptedFiles()
-//{
-//            string[] encryptedFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*_encrypted.txt");
-//            return encryptedFiles.Select(Path.GetFileName).ToList();
-//}
+
         public List<string> GetEncryptedFiles()
         {
             var encryptedFiles = new List<string>();
@@ -173,6 +219,48 @@ namespace EncryptDecryptAndRandomize
 
             return encryptedFiles;
         }
+  public OfuscateAndEncrypt()
+  {
+    
+  }
+////////////////////////
+///
+public List<string> DecryptAndDeobfuscateFiles(string encryptionKey)
+{
+    List<string> decryptedFiles = new List<string>();
+
+    // Get all encrypted files
+    var encryptedFiles = GetEncryptedFiles();
+
+    // Iterate over each encrypted file
+    foreach (var encryptedFile in encryptedFiles)
+    {
+        // Get the file name without extension
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(encryptedFile);
+
+        // Remove the "_encrypted" suffix from the file name
+        string originalFileName = fileNameWithoutExtension.Replace("_encrypted", "");
+
+        // Search for the mapping file with the original file name
+        string mappingFilePath = Directory.GetFiles(Path.GetDirectoryName(encryptedFile), originalFileName + "_mapping.txt", SearchOption.TopDirectoryOnly).FirstOrDefault();
+
+        // Check if the mapping file exists
+        if (!string.IsNullOrEmpty(mappingFilePath))
+        {
+            // Decrypt and deobfuscate the file
+            string decryptedCode = DecryptAndDeobfuscate(encryptedFile, encryptionKey, mappingFilePath);
+
+            // Save the decrypted code to a new file
+            string decryptedFilePath = Path.ChangeExtension(encryptedFile, "_decrypted.txt");
+            File.WriteAllText(decryptedFilePath, decryptedCode);
+
+            decryptedFiles.Add(decryptedFilePath);
+        }
+    }
+
+    return decryptedFiles;
+}
+
 
         //
     }
